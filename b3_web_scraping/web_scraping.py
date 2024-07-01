@@ -1,3 +1,4 @@
+import os
 from io import StringIO
 
 import pandas as pd
@@ -23,6 +24,10 @@ def get_values_b3(url: str, csv_path: str) -> None:
         csv_path (str): csv filepath to store data
     """
     print("get_values_b3 is started ...")
+
+    if os.path.exists(csv_path):
+        # clean up folder to prevent upload existing files
+        os.remove(csv_path)
 
     try:
         # Access b3 website to Scrap the data
