@@ -1,4 +1,5 @@
 import os
+import time
 from io import StringIO
 
 import pandas as pd
@@ -34,21 +35,41 @@ def get_values_b3(url: str, csv_path: str) -> None:
         driver.get(url)
 
         WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="segment"]'))
+        )
+
+        # Find elements for consulting by 'Setor de Atuação'
+        consult_by = driver.find_element(By.XPATH, '//*[@id="segment"]')        
+        consult_by.click()
+        
+        consult_by_option_2 = driver.find_element(By.XPATH, '//*[@id="segment"]/option[2]')
+        consult_by_option_2.click()
+
+        # Check if table exists
+        WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, "table.table.table-responsive-sm.table-responsive-md")
             )
         )
 
         all_data = []
+        page_count = 0
 
         while True:
             """
             Iterates through all available table pages,
             collecting the data and adding it to a list of DataFrames
             """
+            time.sleep(0.5)
+
+            page_count += 1
+
             table = driver.find_element(
                 By.CSS_SELECTOR, "table.table.table-responsive-sm.table-responsive-md"
             )
+
+            time.sleep(0.5)
+
             table_html = table.get_attribute("outerHTML")
             df = pd.read_html(StringIO(table_html))[0]
             df = df.iloc[:-2]
@@ -56,6 +77,7 @@ def get_values_b3(url: str, csv_path: str) -> None:
             all_data.append(df)
 
             try:
+                time.sleep(1)
                 element_exists = check_exists_by_xpath(
                     '//*[@id="listing_pagination"]/pagination-template/ul/li[8]/a'
                 )
@@ -70,6 +92,11 @@ def get_values_b3(url: str, csv_path: str) -> None:
                 else:
                     print(
                         "There is no more page available in the table, writing data to csv..."
+                    )
+                    print(
+                        f"\nData were collected from {page_count} page",
+                        "s" if page_count > 1 else "",
+                        sep="",
                     )
                     break
 

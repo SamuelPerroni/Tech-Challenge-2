@@ -1,9 +1,12 @@
 from datetime import datetime
+import os
 
 import boto3
 
 
-def upload_file_to_s3(csv_path: str, csv_file_name: str, bucket_name: str) -> str:
+os.environ['AWS_PROFILE'] = "TC2"
+
+def upload_file_to_s3(csv_path: str, csv_file_name: str, bucket_name: str) -> None:
     s3 = boto3.client("s3", region_name="us-east-1")
 
     # creating a new bucket key with partition
@@ -12,7 +15,7 @@ def upload_file_to_s3(csv_path: str, csv_file_name: str, bucket_name: str) -> st
 
     # Fazendo upload do arquivo para o S3
     try:
-        s3.upload_file(Filename=csv_path, Bucket=bucket_name, key=raw_key)
+        s3.upload_file(csv_path, bucket_name, raw_key)
         print(f"File '{csv_path}' successfully sent to bucket '{bucket_name}'")
     except FileNotFoundError:
         print(f"File '{csv_path}' not found")
