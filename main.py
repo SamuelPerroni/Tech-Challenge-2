@@ -7,5 +7,5 @@ if __name__ == "__main__":
 
     # Collects the file generated in scraping and uploads it to the raw bucket
     upload_file.upload_file_to_s3(
-        csv_path=CSV_PATH, csv_file_name=CSV_FILE_NAME, bucket_name=BUCKET_NAME
+        csv_path=CSV_PATH, bucket_name=BUCKET_NAME
     )

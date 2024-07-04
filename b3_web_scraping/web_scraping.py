@@ -39,10 +39,12 @@ def get_values_b3(url: str, csv_path: str) -> None:
         )
 
         # Find elements for consulting by 'Setor de Atuação'
-        consult_by = driver.find_element(By.XPATH, '//*[@id="segment"]')        
+        consult_by = driver.find_element(By.XPATH, '//*[@id="segment"]')
         consult_by.click()
-        
-        consult_by_option_2 = driver.find_element(By.XPATH, '//*[@id="segment"]/option[2]')
+
+        consult_by_option_2 = driver.find_element(
+            By.XPATH, '//*[@id="segment"]/option[2]'
+        )
         consult_by_option_2.click()
 
         # Check if table exists
@@ -108,6 +110,7 @@ def get_values_b3(url: str, csv_path: str) -> None:
         if all_data:
             # Concatenates the list of DataFrames into a single one and saves it in a .csv
             final_df = pd.concat(all_data, ignore_index=True)
+            # final_df = final_df.drop([0], axis=0, inplace=True)
             final_df.to_csv(csv_path, index=False)
 
     finally:
