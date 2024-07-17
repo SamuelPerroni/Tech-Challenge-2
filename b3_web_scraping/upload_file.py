@@ -13,6 +13,13 @@ session_token = os.getenv("AWS_SESSION_TOKEN")
 
 
 def upload_file_to_s3(csv_path: str, bucket_name: str) -> None:
+    """
+    upload file to s3 raw bucket
+
+    Parameters:
+        csv_path (str): csv filepath with b3 data
+        bucket_name (str): raw bucket name
+    """
     s3 = boto3.client(
         service_name="s3",
         aws_access_key_id=key_id,
@@ -47,6 +54,13 @@ def upload_file_to_s3(csv_path: str, bucket_name: str) -> None:
 
 
 def convert_to_parquet(csv_path: str, parquet_path: str) -> None:
+    """
+    Convert csv file to parquet
+
+    Parameters:
+        csv_path (str): csv filepath with b3 data
+        parquet_path (str): parquet filepath with b3 data
+    """
     print(f"Converting to parquet ...")
 
     df = pd.read_csv(csv_path)
