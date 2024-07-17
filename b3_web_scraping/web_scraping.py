@@ -1,3 +1,4 @@
+import csv
 import os
 import time
 from io import StringIO
@@ -110,8 +111,10 @@ def get_values_b3(url: str, csv_path: str) -> None:
         if all_data:
             # Concatenates the list of DataFrames into a single one and saves it in a .csv
             final_df = pd.concat(all_data, ignore_index=True)
-            # final_df = final_df.drop([0], axis=0, inplace=True)
             final_df.to_csv(csv_path, index=False)
+            
+            time.sleep(2)
+            delete_first_row(csv_path)
 
     finally:
         driver.quit()
@@ -132,3 +135,20 @@ def check_exists_by_xpath(xpath: str) -> bool:
     except NoSuchElementException:
         return False
     return True
+
+# Função para deletar a primeira linha de um arquivo CSV
+def delete_first_row(csv_file):
+    # Lê o conteúdo do arquivo CSV
+    with open(csv_file, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    # Verifica se há pelo menos duas linhas (cabeçalho + dados)
+    if len(lines) > 1:
+        # Reescreve o arquivo CSV excluindo a primeira linha
+        with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerows(csv.reader(lines[1:]))
+
+        print(f"A primeira linha do arquivo '{csv_file}' foi removida.")
+    else:
+        print(f"O arquivo '{csv_file}' não possui dados para remover.")
